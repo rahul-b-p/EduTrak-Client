@@ -1,0 +1,30 @@
+.bg-login{
+    background-color: var(--main-col-wht);
+}
+.bg-loginbox{
+    background-color: var(--main-col-vlt);
+}
+/* Hide the arrows in input[type=number] */
+.no-spinners::-webkit-outer-spin-button,
+.no-spinners::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Hide the arrows for Firefox */
+.no-spinners[type=number] {
+    -moz-appearance: textfield;
+}
+.bg-dashbord{
+    background-color: var(--main-col-wht);
+}
+.dash-box{
+    background-color: var(--main-col-vlt);
+}
+
+.bg-student{
+    background-color: var(--main-col-wht);
+}
+.stud-hover:hover{
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}

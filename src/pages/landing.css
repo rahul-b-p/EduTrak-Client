@@ -1,0 +1,82 @@
+.landleft {
+    background-color: var(--main-col-vlt);
+    height: 100vh;
+}
+
+.landright {
+    background-color: var(--main-col-wht);
+    height: 100vh;
+}
+
+:root {
+    --radiored: #DC2525;
+}
+
+.custom-radio .form-check-input:checked {
+    background-color: var(--radiored);
+    /* Red background when checked */
+    border-color: var(--radiored);
+    /* Red border when checked */
+}
+
+.custom-radio .form-check-input:checked::after {
+    background-color: var(--radiored);
+    /* Red dot when checked */
+}
+
+.custom-radio .form-check-input {
+    border-color: var(--radiored);
+    /* Red border when not checked */
+}
+
+.custom-radio .form-check-label {
+    color: var(--radiored);
+    /* Red label text */
+}
+
+@keyframes beat {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.25);
+    }
+}
+
+.beat {
+    animation: beat 1s infinite;
+}
+
+#about {
+    background-color: var(--main-col-wht);
+}
+
+#about h1 {
+    text-decoration: underline;
+    font-size: 68px;
+}
+
+#about p {
+    text-align: justify;
+}
+
+#features {
+    background-color: var(--main-col-vlt);
+}
+
+#features h1 {
+    text-decoration: underline;
+    font-size: 68px;
+}
+
+#vlogs {
+    background-color: var(--main-col-wht);
+}
+
+#vlogs h1 {
+    text-decoration: underline;
+    font-size: 68px;
+}

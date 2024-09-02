@@ -1,0 +1,9 @@
+*{
+  padding: 0px;
+  margin: 0px;
+  font-family: "Noto Sans Display", sans-serif;
+}
+:root{
+  --main-col-vlt: #4955C0;
+  --main-col-wht: #D9D9D9;
+}

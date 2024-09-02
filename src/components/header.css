@@ -1,0 +1,17 @@
+.bg-vlt{
+    background-color: var(--main-col-vlt);
+}
+.hover:hover{
+    animation: slowTransform 2s infinite;
+}
+@keyframes slowTransform {
+    0% {
+        transform: scale(1) ;
+    }
+    50% {
+        transform: scale(1.25) ;
+    }
+    100% {
+        transform: scale(1) ;
+    }
+}
