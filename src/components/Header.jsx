@@ -1,18 +1,34 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import './header.css'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import LogoIMg from '../assets/edutrak.png'
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { Button } from 'react-bootstrap';
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
+import { authContext } from '../context/DataShare';
 
 function Header({ landing }) {
     useEffect(() => {
         AOS.init();
     }, [])
+
+    const {setAuth} = useContext(authContext)
+
+    const navigate = useNavigate()
+
+    const logout=()=>{
+        sessionStorage.removeItem('token')
+        sessionStorage.removeItem('useData')
+        sessionStorage.removeItem('studentData')
+        setAuth(false)
+        navigate('/')
+        toast.info('You are now logged out')
+    }
     return (
         <>
             <Navbar collapseOnSelect expand="lg" className="bg-vlt shadow w-100" sticky='top'>
@@ -44,12 +60,13 @@ function Header({ landing }) {
                             </Navbar.Collapse>
                         </>
                         : <Nav className='ms-auto'>
-                            <Button variant='outline-light' className=' me-4'>Logout</Button>
+                            <Button onClick={logout} variant='outline-light' className=' me-4'>Logout</Button>
 
                         </Nav>
                     }
                 </Container>
             </Navbar>
+            <ToastContainer theme='colored' autoClose={3000} position='top-center' />
         </>
     )
 }

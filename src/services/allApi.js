@@ -52,3 +52,12 @@ export const addAttendanceApi=async(id,reqBody)=>{
 export const studentLoginApi=async(reqBody)=>{
     return await commonApi('POST',`${serverUrl}/student-login`,reqBody,"")
 }
+export const getClassForStudentApi=async(id,reqHeader)=>{
+    return await commonApi('GET',`${serverUrl}/get-class-student/${id}`,"",reqHeader)
+}
+
+
+// subscribe
+export const subscribeApi=async(reqBody)=>{
+    return await commonApi('POST',`${serverUrl}/subscribe`,reqBody,"")
+}

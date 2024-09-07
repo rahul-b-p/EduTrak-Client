@@ -9,7 +9,8 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import StudentImg from '../assets/students.png'
 import TeacherImg from '../assets/teacher.png'
-
+import {ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom'
 
 
@@ -122,6 +123,7 @@ function Landing() {
         </Row>
       </Container>
 
+      <ToastContainer theme='colored' autoClose={3000} position='top-center' />
     </>
   )
 }

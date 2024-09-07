@@ -1,19 +1,22 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Button, Col, Container, Row } from 'react-bootstrap'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { loginTeacherApi, studentLoginApi } from '../services/allApi';
+import { authContext } from '../context/DataShare';
 
 function Login({ teacher }) {
 
   const [loginDetails, setLoginDetails] = useState({
     email: "",
     password: "",
-    register: ""
+    register: "",
   })
 
   const navigate = useNavigate()
+
+  const {setAuth} = useContext(authContext)
 
   const location = useLocation()
   const select = location.state
@@ -31,6 +34,7 @@ function Login({ teacher }) {
         // console.log(result.data);
         sessionStorage.setItem('useData', JSON.stringify(result.data.existingTeacher))
         sessionStorage.setItem('token', result.data.token)
+        setAuth(true)
         setTimeout(() => {
           navigate('/dashboard')
         }, 3000)
@@ -44,22 +48,28 @@ function Login({ teacher }) {
 
   const studentLogin = async () => {
     const { register, password } = loginDetails
-    if (!register || !password){
+    if (!register || !password) {
       toast.info('please fill the fields completely')
     }
-    else{
-      const result = studentLoginApi(loginDetails)
-      if(result.status==200){
+    else {
+      const result = await studentLoginApi(loginDetails)
+      if (result.status == 200) {
+        sessionStorage.setItem('studentData', JSON.stringify(result.data.existingStudent))
+        sessionStorage.setItem('token', result.data.token)
+        setAuth(true)
         toast.success('Login Successfull !')
+        setTimeout(() => {
+          navigate('/student')
+        }, 3000)
       }
-      else if(result.response.status==406){
+      else if (result.response.status == 406) {
         toast.warning(result.response.data)
       }
-      else{
+      else {
         toast.error('Something went wrong')
       }
     }
-    
+
   }
 
   return (
@@ -72,11 +82,11 @@ function Login({ teacher }) {
               <h1 className='mt-5 text-center fw-bold'> Login for   Student </h1>}
             <div className="rounded  p-5 bg-loginbox my-5">
               <form>
-                {teacher ? <div className="">
+                {teacher ? <div>
                   <label htmlFor="mail" className='text-light' >Email</label>
                   <input value={loginDetails.email} onChange={(e) => setLoginDetails({ ...loginDetails, email: e.target.value })} id='mail' placeholder='Enter your mail id' type="email" className='form-control rounded-0' />
                 </div> :
-                  <div className="">
+                  <div >
                     <label htmlFor="reg" className='text-light' >Register No</label>
                     <input value={loginDetails.register} onChange={(e) => setLoginDetails({ ...loginDetails, register: e.target.value })} id='reg' placeholder='Enter your Reg No' className='form-control rounded-0 no-spinners' />
                   </div>}

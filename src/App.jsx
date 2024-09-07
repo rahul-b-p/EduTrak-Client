@@ -8,6 +8,7 @@ import Class from './pages/Class'
 import Student from './pages/Student'
 import PageNotAvailable from './pages/PageNotAvailable'
 import Footer from './components/Footer'
+import PrivateRoutes from './auth/PrivateRoutes'
 
 
 function App() {
@@ -21,10 +22,12 @@ function App() {
         <Route path='/loginteacher' element={<Login teacher />} />
         <Route path='/loginstudent' element={<Login />} />
         <Route path='/register' element={<Registration />} />
-        <Route path='/dashboard' element={<Dashboard />} />
-        <Route path='/class' element={<Class teacher />} />
-        <Route path='/student-class' element={<Class />} />
-        <Route path='/student' element={<Student />} />
+        <Route element={<PrivateRoutes/>}>
+          <Route path='/dashboard' element={<Dashboard />} />
+          <Route path='/class' element={<Class teacher />} />
+          <Route path='/student-class' element={<Class />} />
+          <Route path='/student' element={<Student />} />
+        </Route>
         <Route path='*' element={<PageNotAvailable />} />
       </Routes>
       <ConditionalCommonComponent />

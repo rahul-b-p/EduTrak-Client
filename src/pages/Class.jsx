@@ -154,7 +154,7 @@ function Class({ teacher }) {
               <h3 className="text-center mt-4 text-danger">No students added yet</h3>
             }
 
-            {allStudents.length>0 && <div className='d-flex justify-content-center mt-4'><Button variant='success' onClick={generatePdf}>Export into pdf<FontAwesomeIcon icon={faDownload} className='ms-2' /></Button></div>}
+            {teacher && allStudents.length>0 && <div className='d-flex justify-content-center mt-4'><Button variant='success' onClick={generatePdf}>Export into pdf<FontAwesomeIcon icon={faDownload} className='ms-2' /></Button></div>}
 
           </Col>
           <Col md={1}></Col>
