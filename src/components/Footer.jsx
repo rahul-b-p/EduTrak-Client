@@ -17,7 +17,7 @@ function Footer({ landing }) {
 
   const subscribe = async () => {
     const result = await subscribeApi(subscriber)
-    console.log(result);
+    // console.log(result);
     
     if (result.status == 200) {
       toast.success('Subscribed successfully, Check your email')
