@@ -42,8 +42,11 @@ function Login({ teacher }) {
         }, 3000)
 
       }
+      else if (result.response.status == 406) {
+        toast.warning(result.response.data)
+      }
       else {
-        toast.error(result.response.data)
+        toast.error('Something went wrong')
       }
     }
   }
