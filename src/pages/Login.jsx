@@ -5,6 +5,8 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { loginTeacherApi, studentLoginApi } from '../services/allApi';
 import { authContext } from '../context/DataShare';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
 function Login({ teacher }) {
 
@@ -74,6 +76,7 @@ function Login({ teacher }) {
 
   return (
     <>
+      <div className='w-100 d-flex justify-content-center bg-login pt-4'><Link to={'/'}><Button variant='success'><FontAwesomeIcon icon={faArrowLeft} className='me-2' />Back to Home</Button></Link></div>
       <Container fluid className='d-flex justify-content-center bg-login'>
         <Row className='w-100'>
           <Col md={3} sm={2} xs={1} ></Col>

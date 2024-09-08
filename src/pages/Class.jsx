@@ -2,24 +2,26 @@ import React, { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import { Button, Col, Container, Row, Table } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft, faDownload, faTrashCan } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft, faDownload } from '@fortawesome/free-solid-svg-icons'
 import AddStudent from '../components/AddStudent'
 import { Link, useLocation } from 'react-router-dom'
 import EditStudent from '../components/EditStudent'
-import { deleteStudentApi, getAllStudentsApi } from '../services/allApi'
+import { getAllStudentsApi } from '../services/allApi'
 import { useContext } from 'react'
-import { addStudentResponseContext, editStudentResponseContext } from '../context/StudentDataShare'
-import { toast, ToastContainer } from 'react-toastify'
+import { addStudentResponseContext, deleteStudentResponseContext, editStudentResponseContext } from '../context/StudentDataShare'
+import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import DeleteStudent from '../components/DeleteStudent'
 
 function Class({ teacher }) {
   const [allStudents, setAllStudents] = useState([])
-  const [deleteResponse, setDeleteResponse] = useState(false)
+  
 
   const { addStudentResponse, setAddStudentResponse } = useContext(addStudentResponseContext)
-  const {editStudentResponse, setEditStudentResponse} = useContext(editStudentResponseContext)
+  const { editStudentResponse, setEditStudentResponse } = useContext(editStudentResponseContext)
+  const {deleteStudentResponse,setDeleteStudentResponse} = useContext(deleteStudentResponseContext)
 
   const location = useLocation()
   const classData = location.state
@@ -38,50 +40,63 @@ function Class({ teacher }) {
     }
   }
 
-  const handleDelete = async (id) => {
-    const token = sessionStorage.getItem("token")
-    if (token) {
-      const result = await deleteStudentApi(id)
-      console.log(result);
-      if (result.status == 200) {
-        toast.success('student deleted Succesfully')
-        setDeleteResponse(true)
-      }
-      else {
-        toast.error('something went wrong')
-      }
-    }
-    else {
-      toast.warning('Please Login to delete')
-    }
+  
 
-  }
-
-  const generatePdf =()=>{
+  const generatePdf = () => {
     const pdf = new jsPDF()
 
     const body = []
 
-    allStudents.forEach((item)=>{
-      body.push([item.register, item.name, item.attendance.percentage, item.marks.total])
+    allStudents.forEach((item) => {
+      body.push([item.register, item.name, item.attendance.percentage, item.marks.total, `Attendance : ${item?.attendance.percentage >= classData.eligiblity.attendance ? 'eligible' : 'not eligible'}    Marks : ${item?.marks.total >= classData.eligiblity.mark ? 'eligible' : 'not eligible'}`])
     })
 
-    let head = [['Register No', "Name", 'Attendance', 'mark']]
+    let head = [['Register No', "Name", 'Attendance', 'mark', 'eligibility']]
 
-    autoTable(pdf,{head,body})
+    autoTable(pdf, { head, body })
     pdf.setFontSize(16)
-    pdf.text('Progress Report',10,10)
+    pdf.text('Progress Report', 10, 10)
     pdf.save(`report-for-${classData.batch}-${classData.subject}`)
+
+    const pdfOutput = pdf.output('blob');
+    const pdfURL = URL.createObjectURL(pdfOutput);
+
+    // Open in a new window/tab
+    window.open(pdfURL, '_blank');
   }
+
+  const generateStudentLoginData = () => {
+    const pdf = new jsPDF()
+
+    const body = []
+
+    allStudents.forEach((item) => {
+      body.push([item.register, item.name, item.passkey])
+    })
+
+    let head = [['Register No', "Name", 'passkey']]
+
+    autoTable(pdf, { head, body })
+    pdf.setFontSize(16)
+    pdf.text('Progress Report', 10, 10)
+    pdf.save(`report-for-${classData.batch}-${classData.subject}`)
+
+    const pdfOutput = pdf.output('blob');
+    const pdfURL = URL.createObjectURL(pdfOutput);
+
+    // Open in a new window/tab
+    window.open(pdfURL, '_blank');
+  }
+
 
 
   useEffect(() => {
     getStudents()
     setAllStudents(allStudents.sort((a, b) => a.register.localeCompare(b.register)))
     setAddStudentResponse(false)
-    setDeleteResponse(false)
     setEditStudentResponse(false)
-  }, [addStudentResponse, deleteResponse, editStudentResponse])
+    setDeleteStudentResponse(false)
+  }, [addStudentResponse, editStudentResponse, deleteStudentResponse])
   return (
     <>
       <Header />
@@ -123,6 +138,7 @@ function Class({ teacher }) {
                     <th rowSpan={2} className='text-center align-middle bg-light'>Name</th>
                     <th rowSpan={2} className='text-center align-middle bg-light'>Attendance</th>
                     <th className='text-center bg-light' colspan="3">Marks</th>
+                    <th rowSpan={2} className='text-center align-middle bg-light'>Eligibility</th>
                     {teacher && <th rowSpan={2} className='text-center align-middle bg-light'>Action</th>}
                   </tr>
                   <tr>
@@ -140,10 +156,18 @@ function Class({ teacher }) {
                       <td className='text-center align-middle'>{item?.marks.term1}</td>
                       <td className='text-center align-middle'>{item?.marks.term2}</td>
                       <td className='text-center align-middle'>{item?.marks.total}</td>
+                      {item?.marks.total && item?.attendance.percentage ? <td className='text-center align-middle'>
+                        <b>Attendance</b> : {item?.attendance.percentage >= classData.eligiblity.attendance ? 'eligible' : 'not eligible'}
+                        <br />
+                        <b>Marks</b> : {item?.marks.total >= classData.eligiblity.mark ? 'eligible' : 'not eligible'}
+                      </td>
+                        :
+                        <td></td>
+                      }
                       {teacher && <td>
                         <div className='w-100 d-flex justify-content-evenly'>
                           <EditStudent student={item} />
-                          <Button onClick={() => handleDelete(item?._id)} className='ms-3 ms-md-0' variant='danger' ><FontAwesomeIcon icon={faTrashCan} size='xl' /></Button>
+                          <DeleteStudent student={item} />
                         </div>
                       </td>}
                     </tr>
@@ -154,12 +178,16 @@ function Class({ teacher }) {
               <h3 className="text-center mt-4 text-danger">No students added yet</h3>
             }
 
-            {teacher && allStudents.length>0 && <div className='d-flex justify-content-center mt-4'><Button variant='success' onClick={generatePdf}>Export into pdf<FontAwesomeIcon icon={faDownload} className='ms-2' /></Button></div>}
+            {teacher && allStudents.length > 0 && <div className='d-flex justify-content-center mt-4'>
+              <Button variant='primary' onClick={generatePdf}>Download Progress Report<FontAwesomeIcon icon={faDownload} className='ms-2' /></Button>
+              <Button variant='success' className='ms-4' onClick={generateStudentLoginData}>Download Student Login Data<FontAwesomeIcon icon={faDownload} className='ms-2' /></Button>
+            </div>}
 
           </Col>
           <Col md={1}></Col>
         </Row>
       </Container>
+
       <ToastContainer theme='colored' autoClose={3000} position='top-center' />
     </>
   )

@@ -4,6 +4,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { generateOtpApi, regTeacherApi } from '../services/allApi'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
 function Registration() {
   const [teacher, setTeacher] = useState({
@@ -70,6 +72,7 @@ function Registration() {
 
   return (
     <>
+      <div className='w-100 d-flex justify-content-center bg-login pt-4'><Link to={'/'}><Button variant='success'><FontAwesomeIcon icon={faArrowLeft} className='me-2' />Back to Home</Button></Link></div>
       <Container fluid className='d-flex justify-content-center bg-login'>
         <Row className='w-100'>
           <Col md={3} sm={2} xs={1} ></Col>
